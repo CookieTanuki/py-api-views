@@ -75,8 +75,8 @@ class MovieSerializer(serializers.Serializer):
         actors_data = validated_data.pop("actors")
         genres_data = validated_data.pop("genres")
         movie = Movie.objects.create(**validated_data)
-        movie.genres = genres_data
-        movie.actors = actors_data
+        movie.genres.set(genres_data)
+        movie.actors.set(actors_data)
         return movie
 
     def update(self, instance, validated_data):
@@ -87,13 +87,12 @@ class MovieSerializer(serializers.Serializer):
             "description",
             instance.description
         )
-        instance.actors = validated_data.get("actors", instance.actors)
         instance.duration = validated_data.get("duration", instance.duration)
 
         if actors_data:
-            instance.actors = actors_data
+            instance.actors.set(actors_data)
         if genres_data:
-            instance.genres = genres_data
+            instance.genres.set(genres_data)
 
         instance.save()
 
